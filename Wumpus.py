@@ -31,6 +31,7 @@ class HuntTheWumpusGrid:
 
         self.place_player()
         self.place_wumpus()
+        self.place_pits()
 
     def place_player(self):
         x, y = self.player_position
@@ -47,10 +48,23 @@ class HuntTheWumpusGrid:
                 self.grid[x][y].haswumpus = True
                 break
 
+    def place_pits(self, num_pits=3):
+        """
+        Randomly place pits in the grid, avoiding the player's starting position and the Wumpus.
+        """
+        for _ in range(num_pits):
+            while True:
+                x = random.randint(0, self.rows - 1)
+                y = random.randint(0, self.cols - 1)
+                if (x,
+                        y) != self.player_position and not self.grid[x][y].haswumpus:
+                    self.grid[x][y].haspit = True
+                    break
+
     def move_player(self, direction):
         """
         Moves the player in the specified direction (up, down, left, right).
-        Displays the new coordinates after the move and checks for Wumpus collision.
+        Displays the new coordinates after the move and checks for hazards.
         """
         if self.game_over:
             print("Game over! You cannot move.")
@@ -77,25 +91,43 @@ class HuntTheWumpusGrid:
         # Display the new coordinates
         print(f"Player moved to coordinates: ({x}, {y})")
 
-        # Check for Wumpus collision
+        # Check for hazards and wumpus encounter
         if self.grid[x][y].haswumpus:
             print("You encountered the Wumpus! Game over!")
             self.game_over = True
+        elif self.grid[x][y].haspit:
+            print("You fell into a pit! Game over!")
+            self.game_over = True
         else:
-            # Check for proximity to the Wumpus
+            # Check for proximity to hazards and wumpus
             if self.is_near_wumpus(x, y):
                 print("It stinks nearby!")
+            if self.is_near_pit(x, y):
+                print("You feel a breeze!")
 
     def is_near_wumpus(self, x, y):
         """
         Checks if the player is adjacent to the Wumpus.
         """
-         # Up, Down, Left, Right
-        directions = [(-1, 0), (1, 0), (0, -1), (0, 1)] 
+        directions = [(-1, 0), (1, 0), (0, -1), (0, 1)
+                      ]  # Up, Down, Left, Right
         for dx, dy in directions:
             nx, ny = x + dx, y + dy
             if 0 <= nx < self.rows and 0 <= ny < self.cols:
                 if self.grid[nx][ny].haswumpus:
+                    return True
+        return False
+
+    def is_near_pit(self, x, y):
+        """
+        Checks if the player is adjacent to a pit.
+        """
+        directions = [(-1, 0), (1, 0), (0, -1), (0, 1)
+                      ]  # Up, Down, Left, Right
+        for dx, dy in directions:
+            nx, ny = x + dx, y + dy
+            if 0 <= nx < self.rows and 0 <= ny < self.cols:
+                if self.grid[nx][ny].haspit:
                     return True
         return False
 
@@ -109,8 +141,10 @@ def main():
         # Display player position
         print(f"Player is at {game.player_position}.")
         # Get player input
-        move = input("Enter your move (up, down, left, right): ").strip().lower()
+        move = input(
+            "Enter your move (up, down, left, right): ").strip().lower()
         game.move_player(move)
 
 
-main()
+if __name__ == "__main__":
+    main()
