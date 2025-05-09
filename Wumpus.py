@@ -56,7 +56,7 @@ class HuntTheWumpusGrid:
     def move_player(self, direction):
         """
         Moves the player in the specified direction (up, down, left, right).
-        Displays the new coordinates after the move.
+        Displays the new coordinates after the move!
         """
         x, y = self.player_position
 
@@ -93,5 +93,5 @@ def main():
     game.move_player("down")
 
     game.move_player("right")
-    
+
     game.move_player("up")
