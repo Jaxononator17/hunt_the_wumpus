@@ -2,7 +2,7 @@ import random
 
 
 class Cell:
-    def __init__(self):  # Fix the constructor method
+    def __init__(self):
         self.haswumpus = False
         self.haspit = False
         self.hasgold = False
@@ -67,6 +67,9 @@ class HuntTheWumpusGrid:
             y -= 1
         elif direction == "right" and y < self.cols - 1:
             y += 1
+        else:
+            print("Invalid move. Try again.")
+            return
 
         self.player_position = (x, y)
         self.grid[x][y].is_player = True
@@ -78,16 +81,36 @@ class HuntTheWumpusGrid:
         if self.grid[x][y].haswumpus:
             print("You encountered the Wumpus! Game over!")
             self.game_over = True
+        else:
+            # Check for proximity to the Wumpus
+            if self.is_near_wumpus(x, y):
+                print("It stinks nearby!")
+
+    def is_near_wumpus(self, x, y):
+        """
+        Checks if the player is adjacent to the Wumpus.
+        """
+         # Up, Down, Left, Right
+        directions = [(-1, 0), (1, 0), (0, -1), (0, 1)] 
+        for dx, dy in directions:
+            nx, ny = x + dx, y + dy
+            if 0 <= nx < self.rows and 0 <= ny < self.cols:
+                if self.grid[nx][ny].haswumpus:
+                    return True
+        return False
 
 
 def main():
     # Create a 5x5 grid for the game
     game = HuntTheWumpusGrid(5, 5)
 
-    # Simulate player movement
-    game.move_player("down")
-    game.move_player("right")
-    game.move_player("up")
-    game.move_player("right")  # Add more moves to test Wumpus collision
+    # Game loop
+    while not game.game_over:
+        # Display player position
+        print(f"Player is at {game.player_position}.")
+        # Get player input
+        move = input("Enter your move (up, down, left, right): ").strip().lower()
+        game.move_player(move)
+
 
 main()
