@@ -28,6 +28,7 @@ class HuntTheWumpusGrid:
         self.grid = [[Cell() for _ in range(cols)] for _ in range(rows)]
         self.player_position = (0, 0)
         self.game_over = False
+        self.wumpus_alive = True
 
         self.place_player()
         self.place_wumpus()
@@ -56,8 +57,7 @@ class HuntTheWumpusGrid:
             while True:
                 x = random.randint(0, self.rows - 1)
                 y = random.randint(0, self.cols - 1)
-                if (x,
-                        y) != self.player_position and not self.grid[x][y].haswumpus:
+                if (x, y) != self.player_position and not self.grid[x][y].haswumpus:
                     self.grid[x][y].haspit = True
                     break
 
@@ -91,7 +91,7 @@ class HuntTheWumpusGrid:
         # Display the new coordinates
         print(f"Player moved to coordinates: ({x}, {y})")
 
-        # Check for hazards and wumpus encounter
+        # Check for hazards
         if self.grid[x][y].haswumpus:
             print("You encountered the Wumpus! Game over!")
             self.game_over = True
@@ -99,18 +99,62 @@ class HuntTheWumpusGrid:
             print("You fell into a pit! Game over!")
             self.game_over = True
         else:
-            # Check for proximity to hazards and wumpus
+            # Check for proximity to hazards
             if self.is_near_wumpus(x, y):
                 print("It stinks nearby!")
             if self.is_near_pit(x, y):
                 print("You feel a breeze!")
 
+    def shoot_arrow(self, direction):
+        """
+        Shoots an arrow in the specified direction (up, down, left, right).
+        If the arrow hits the Wumpus, the Wumpus is killed, and the player wins.
+        """
+        if not self.wumpus_alive:
+            print("The Wumpus is already dead!")
+            return
+
+        x, y = self.player_position
+
+        if direction == "up":
+            for i in range(x - 1, -1, -1):
+                if self.grid[i][y].haswumpus:
+                    print("You shot the Wumpus! You win!")
+                    self.wumpus_alive = False
+                    self.game_over = True
+                    return
+        elif direction == "down":
+            for i in range(x + 1, self.rows):
+                if self.grid[i][y].haswumpus:
+                    print("You shot the Wumpus! You win!")
+                    self.wumpus_alive = False
+                    self.game_over = True
+                    return
+        elif direction == "left":
+            for j in range(y - 1, -1, -1):
+                if self.grid[x][j].haswumpus:
+                    print("You shot the Wumpus! You win!")
+                    self.wumpus_alive = False
+                    self.game_over = True
+                    return
+        elif direction == "right":
+            for j in range(y + 1, self.cols):
+                if self.grid[x][j].haswumpus:
+                    print("You shot the Wumpus! You win!")
+                    self.wumpus_alive = False
+                    self.game_over = True
+                    return
+        else:
+            print("Invalid direction. Try again.")
+            return
+
+        print("You missed! The Wumpus is still alive!")
+
     def is_near_wumpus(self, x, y):
         """
         Checks if the player is adjacent to the Wumpus.
         """
-        directions = [(-1, 0), (1, 0), (0, -1), (0, 1)
-                      ]  # Up, Down, Left, Right
+        directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]  # Up, Down, Left, Right
         for dx, dy in directions:
             nx, ny = x + dx, y + dy
             if 0 <= nx < self.rows and 0 <= ny < self.cols:
@@ -122,8 +166,7 @@ class HuntTheWumpusGrid:
         """
         Checks if the player is adjacent to a pit.
         """
-        directions = [(-1, 0), (1, 0), (0, -1), (0, 1)
-                      ]  # Up, Down, Left, Right
+        directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]  # Up, Down, Left, Right
         for dx, dy in directions:
             nx, ny = x + dx, y + dy
             if 0 <= nx < self.rows and 0 <= ny < self.cols:
@@ -141,9 +184,15 @@ def main():
         # Display player position
         print(f"Player is at {game.player_position}.")
         # Get player input
-        move = input(
-            "Enter your move (up, down, left, right): ").strip().lower()
-        game.move_player(move)
+        action = input("Enter your action (move/shoot): ").strip().lower()
+        if action == "move":
+            move = input("Enter your move (up, down, left, right): ").strip().lower()
+            game.move_player(move)
+        elif action == "shoot":
+            direction = input("Enter direction to shoot (up, down, left, right): ").strip().lower()
+            game.shoot_arrow(direction)
+        else:
+            print("Invalid action. Try again.")
 
 
 if __name__ == "__main__":
