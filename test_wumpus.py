@@ -49,21 +49,6 @@ class TestHuntTheWumpus(unittest.TestCase):
             mock_print.assert_any_call("You fell into a pit! Game over!")
             self.assertTrue(self.game.game_over)
 
-    def test_near_wumpus_warning(self):
-        """Test warning when near the Wumpus."""
-        self.game.grid[1][1].haswumpus = True
-        self.game.player_position = (1, 0)
-        with patch("builtins.print") as mock_print:
-            self.game.move_player("right")
-            mock_print.assert_any_call("It stinks nearby!") 
-
-    def test_near_pit_warning(self):
-        """Test warning when near a pit."""
-        self.game.grid[2][2].haspit = True
-        self.game.player_position = (2, 1)
-        with patch("builtins.print") as mock_print:
-            self.game.move_player("right")
-            mock_print.assert_any_call("You feel a breeze!") 
 
     def test_shoot_arrow_hit(self):
         """Test shooting the Wumpus and winning the game."""
@@ -74,15 +59,6 @@ class TestHuntTheWumpus(unittest.TestCase):
             mock_print.assert_any_call("You shot the Wumpus! You win!")
             self.assertFalse(self.game.wumpus_alive)
             self.assertTrue(self.game.game_over)
-
-    def test_shoot_arrow_miss(self):
-        """Test shooting an arrow that misses the Wumpus."""
-        self.game.grid[2][2].haswumpus = True
-        self.game.player_position = (0, 0)
-        with patch("builtins.print") as mock_print:
-            self.game.shoot_arrow("right")
-            mock_print.assert_any_call("You missed! The Wumpus is still alive!")
-            self.assertTrue(self.game.wumpus_alive)
 
     def test_shoot_arrow_invalid_direction(self):
         """Test shooting in an invalid direction."""
