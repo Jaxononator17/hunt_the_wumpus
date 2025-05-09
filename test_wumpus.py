@@ -37,7 +37,9 @@ class TestHuntTheWumpus(unittest.TestCase):
         self.game.player_position = (2, 1)
         with patch("builtins.print") as mock_print:
             self.game.move_player("right")
-            mock_print.assert_any_call("You encountered the Wumpus! Game over!")
+            mock_print.assert_any_call(
+                "You encountered the Wumpus! Game over!"
+            )
             self.assertTrue(self.game.game_over)
 
     def test_pit_collision(self):
@@ -68,4 +70,3 @@ class TestHuntTheWumpus(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-
