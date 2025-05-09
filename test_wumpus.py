@@ -1,11 +1,11 @@
 import unittest
 from unittest.mock import patch
-from Wumpus import HuntTheWumpusGrid, Cell
+from Wumpus import HuntTheWumpusGrid
 
 
 class TestHuntTheWumpus(unittest.TestCase):
     def setUp(self):
-        # Create a 5x5 grid for testing
+        """Create a 5x5 grid for testing."""
         self.game = HuntTheWumpusGrid(5, 5)
 
     def test_player_initial_position(self):
@@ -49,7 +49,6 @@ class TestHuntTheWumpus(unittest.TestCase):
             mock_print.assert_any_call("You fell into a pit! Game over!")
             self.assertTrue(self.game.game_over)
 
-
     def test_shoot_arrow_hit(self):
         """Test shooting the Wumpus and winning the game."""
         self.game.grid[2][2].haswumpus = True
@@ -69,3 +68,4 @@ class TestHuntTheWumpus(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
