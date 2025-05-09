@@ -1,7 +1,7 @@
 import random
 
 
-##implementing cell class like i used for my ant colony
+# implementing cell class like i used for my ant colony
 class Cell:
     def init(slef):
 
@@ -21,14 +21,14 @@ class Cell:
         elif self.haswumpus:
 
             return "W"
-        
+
         elif self.haspit:
 
             return "O"
         elif self.hasgold:
 
             return "G"
-        
+
         else:
             return "."
 
@@ -43,7 +43,7 @@ class HuntTheWumpusGrid:
 
         self.grid = [[Cell() for _ in range(cols)] for _ in range(rows)]
 
-        self.player_position = (0, 0)  
+        self.player_position = (0, 0)
 
         self.place_player()
 
@@ -60,7 +60,7 @@ class HuntTheWumpusGrid:
         """
         x, y = self.player_position
 
-        self.grid[x][y].is_player = False 
+        self.grid[x][y].is_player = False
 
         if direction == "up" and x > 0:
 
@@ -83,8 +83,9 @@ class HuntTheWumpusGrid:
         print(f"Player moved to coordinates: ({x}, {y})")
 
 
-##I am going to turn this into my first test case after this push to ensure that the playter can mover after every test before pushing
-def main(): 
+# I am going to turn this into my first test case after this push to
+# ensure that the playter can mover after every test before pushing
+def main():
 
     # Create a 5x5 grid for the game
     game = HuntTheWumpusGrid(5, 5)
